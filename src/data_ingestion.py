@@ -2,9 +2,6 @@ import os
 import urllib.request
 from pathlib import Path
 
-import pandas as pd
-from sklearn.datasets import fetch_openml
-
 DATA_PATH = Path("data/raw")
 
 
@@ -21,6 +18,7 @@ def download_data():
         print("Dataset downloaded from UCI repository")
     else:
         print("Dataset already exists locally")
+
 
 if __name__ == "__main__":
     download_data()

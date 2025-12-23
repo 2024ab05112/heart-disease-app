@@ -14,6 +14,7 @@ from sklearn.metrics import (
     roc_curve
 )
 
+
 def evaluate_and_log(model, X_test, y_test, model_name):
     y_pred = model.predict(X_test)
 

@@ -6,7 +6,8 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.pipeline import Pipeline
 from sklearn.model_selection import cross_validate, StratifiedKFold
 
-from src.model_evaluate import evaluate_and_log 
+from src.model_evaluate import evaluate_and_log
+
 
 def cross_validate_model(pipeline, X, y):
     cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
@@ -29,6 +30,7 @@ def cross_validate_model(pipeline, X, y):
     mlflow.log_metrics(avg_scores)
 
     return avg_scores
+
 
 def train_models(preprocessor, X_train, X_test, y_train, y_test):
     models = {

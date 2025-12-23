@@ -4,6 +4,7 @@ import pandas as pd
 import mlflow
 import mlflow.sklearn
 
+
 def save_best_model(comparison_csv_path):
     df = pd.read_csv(comparison_csv_path)
 
@@ -40,7 +41,6 @@ def save_best_model(comparison_csv_path):
         pickle.dump(model, f)
 
     print("Final model saved in MLflow Registry and as pickle")
-
 
 
 if __name__ == "__main__":

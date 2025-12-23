@@ -60,6 +60,7 @@ def data_cleaning():
 
     return df
 
+
 def data_visualization(df):
     plt.figure(figsize=(20, 10))
     sns.heatmap(df.corr(), annot=True)
