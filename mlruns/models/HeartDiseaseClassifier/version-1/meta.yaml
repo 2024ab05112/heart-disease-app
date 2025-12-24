@@ -1,15 +1,15 @@
-creation_timestamp: 1766487228879
+creation_timestamp: 1766572772418
 current_stage: None
 deployment_job_state: null
 description: null
-last_updated_timestamp: 1766487228879
-model_id: m-ab2b599389ca48ebb34b1dc80b7a68cc
+last_updated_timestamp: 1766572772418
+model_id: m-eb37cee44ed7456c9357dad18a03ef1b
 name: HeartDiseaseClassifier
-run_id: 8cc94e7b4e2a45738f91d21e71dd899f
+run_id: 5d95336752ed4741b5aae4b8184a005f
 run_link: null
-source: models:/m-ab2b599389ca48ebb34b1dc80b7a68cc
+source: models:/m-eb37cee44ed7456c9357dad18a03ef1b
 status: READY
 status_message: null
-storage_location: file:C:/Users/Admin/Desktop/BITS PILANI/MLOPs/assignment/MLOps_assignment/mlruns/320328730626037871/models/m-ab2b599389ca48ebb34b1dc80b7a68cc/artifacts
+storage_location: file:///C:\Users\Admin\Desktop\BITS PILANI\MLOPs\assignment\MLOps_assignment_1\MLOps_assignment\mlruns/315803911918259163/models/m-eb37cee44ed7456c9357dad18a03ef1b/artifacts
 user_id: null
 version: 1

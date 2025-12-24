@@ -29,9 +29,17 @@ def save_best_model(comparison_csv_path):
     model_uri = f"runs:/{best_run.info.run_id}/model"
 
     # Save as MLflow registered model
-    mlflow.register_model(
+    result = mlflow.register_model(
         model_uri=model_uri,
         name="HeartDiseaseClassifier"
+    )
+
+    # Promote to staging
+    client.transition_model_version_stage(
+        name="HeartDiseaseClassifier",
+        version=result.version,
+        stage="staging",
+        archive_existing_versions=True
     )
 
     # Load model and save as pickle
