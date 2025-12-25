@@ -32,6 +32,7 @@ jobs:
         flake8 src 
     - name: Run tests
       run: |
+        pip install httpx
         pytest tests/ --junitxml=reports/test-report.xml
 
     - name: Upload test report
