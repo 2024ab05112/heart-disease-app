@@ -1,23 +1,29 @@
-import pickle
+import logging
+import time
+from typing import Optional
+
 import pandas as pd
-from fastapi import FastAPI
-from pydantic import BaseModel
 import mlflow
 import mlflow.sklearn
-from src.logging_config import setup_logging
-import logging
-from src.monitoring import REQUEST_COUNT, REQUEST_LATENCY
-from fastapi import Request
-import time
-from prometheus_client import generate_latest
+from fastapi import FastAPI, Request
 from fastapi.responses import Response
+from pydantic import BaseModel
+from prometheus_client import generate_latest
+
+from src.logging_config import setup_logging
+from src.monitoring import REQUEST_COUNT, REQUEST_LATENCY
+
 
 setup_logging()
 logger = logging.getLogger(__name__)
 
+
+# Load the trained model exported by the training pipeline
 model = mlflow.sklearn.load_model(model_uri="exported_model")
 
+
 app = FastAPI(title="Heart Disease Prediction API")
+
 
 class PatientInput(BaseModel):
     age: int
@@ -34,6 +40,7 @@ class PatientInput(BaseModel):
     ca: int
     thal: int
 
+
 @app.middleware("http")
 async def metrics_middleware(request: Request, call_next):
     start_time = time.time()
@@ -41,33 +48,37 @@ async def metrics_middleware(request: Request, call_next):
 
     REQUEST_COUNT.labels(
         method=request.method,
-        endpoint=request.url.path
+        endpoint=request.url.path,
     ).inc()
 
     REQUEST_LATENCY.observe(time.time() - start_time)
     return response
 
+
 @app.get("/metrics")
 def metrics():
     return Response(generate_latest(), media_type="text/plain")
+
 
 @app.get("/")
 def health_check():
     return "API is running"
 
+
 @app.post("/predict")
 def predict(data: PatientInput):
-    logger.info(f"Prediction request received: {data}")
+    logger.info("Prediction request received: %s", data)
 
     df = pd.DataFrame([data.dict()])
     prediction = int(model.predict(df)[0])
 
+    confidence: Optional[float]
     try:
         proba = model.predict_proba(df)[0]
         confidence = float(proba[prediction])
-    except Exception as e:
-        print(f"DEBUG: Probability failed with error: {e}") # This will show in your Docker logs
+    except Exception as exc:  # type: ignore
+        logger.warning("Probability calculation failed: %s", exc)
         confidence = None
 
-    logger.info(f"Prediction={prediction}, confidence={confidence}")
+    logger.info("Prediction=%s, confidence=%s", prediction, confidence)
     return {"prediction": prediction, "confidence": confidence}

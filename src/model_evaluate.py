@@ -1,7 +1,3 @@
-import json
-
-import matplotlib
-matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import seaborn as sns
 import mlflow
@@ -13,8 +9,11 @@ from sklearn.metrics import (
     roc_auc_score,
     classification_report,
     confusion_matrix,
-    roc_curve
+    roc_curve,
 )
+import json
+import matplotlib
+matplotlib.use("Agg")
 
 
 def evaluate_and_log(model, X_test, y_test, model_name):

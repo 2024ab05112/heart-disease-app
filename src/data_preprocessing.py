@@ -1,3 +1,8 @@
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.compose import ColumnTransformer
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
 import os
 from pathlib import Path
 
@@ -5,18 +10,13 @@ import numpy as np
 import pandas as pd
 import matplotlib
 matplotlib.use('Agg')
-import matplotlib.pyplot as plt
-import seaborn as sns
-from sklearn.compose import ColumnTransformer
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler, OneHotEncoder
 
 TARGET = "target"
 DATA_PATH_RAW = Path("data/raw")
 DATA_PATH_CLEAN = Path("data/processed")
 RAW_FILE = os.path.join(DATA_PATH_RAW, "processed.cleveland.data")
 CLEAN_CSV = os.path.join(DATA_PATH_CLEAN, "heart_disease_cleaned.csv")
- 
+
 
 def data_cleaning():
     DATA_PATH_CLEAN.mkdir(parents=True, exist_ok=True)
