@@ -56,7 +56,7 @@ metadata:
     app.kubernetes.io/component: frontend
     app.kubernetes.io/part-of: heart-disease-prediction
 spec:
-  type: NodePort
+  type: LoadBalancer
   selector:
     app.kubernetes.io/name: heart-disease-frontend
     app.kubernetes.io/component: frontend
