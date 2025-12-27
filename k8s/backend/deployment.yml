@@ -21,8 +21,8 @@ spec:
     spec:
       containers:
         - name: heart-disease-api
-          image: heart-disease-api:latest
-          imagePullPolicy: Never
+          image: 2024ab05112/heart-disease-api:latest
+          imagePullPolicy: Always
           ports:
             - name: http
               containerPort: 8000

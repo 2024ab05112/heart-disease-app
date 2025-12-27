@@ -28,22 +28,22 @@ This project demonstrates an end-to-end MLOps pipeline for a Heart Disease Predi
 minikube start
 ```
 
-### Step 2: Build Docker Images
-Since we are using local images, we need to build them and load them into the Minikube cluster.
+### Step 2: Build and Push Docker Images
+We need to build the images and push them to Docker Hub so Kubernetes can pull them.
+
+**(First, log in to Docker Hub: `docker login`)**
 
 **Backend Image:**
 ```bash
-docker build -t heart-disease-api:latest backend/
-minikube image load heart-disease-api:latest
+docker build -t 2024ab05112/heart-disease-api:latest backend/
+docker push 2024ab05112/heart-disease-api:latest
 ```
 
 **Frontend Image:**
 ```bash
-docker build -t heart-disease-frontend:latest frontend/
-minikube image load heart-disease-frontend:latest
+docker build -t 2024ab05112/heart-disease-frontend:latest frontend/
+docker push 2024ab05112/heart-disease-frontend:latest
 ```
-
-*(Note: Depending on your network, you might need to use --network=host for the build step)*
 
 ### Step 3: Deploy to Kubernetes
 Apply the Kubernetes manifests from the organized directories.
