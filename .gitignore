@@ -36,3 +36,6 @@ htmlcov/
 Thumbs.db
 .vscode/
 .idea/
+
+# SSH keys
+.ssh/
