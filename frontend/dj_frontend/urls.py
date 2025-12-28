@@ -8,13 +8,13 @@ urlpatterns = [
     
     # Reverse Proxy for Backend API
     path('api/<path:path>', ProxyView.as_view(upstream='http://heart-disease-service')),
-    path('api/', ProxyView.as_view(upstream='http://heart-disease-service')),
+    path('api/', ProxyView.as_view(upstream='http://heart-disease-service'), {'path': ''}),
 
     # Reverse Proxy for Grafana
     path('grafana/<path:path>', ProxyView.as_view(upstream='http://grafana:3000/grafana/')),
-    path('grafana/', ProxyView.as_view(upstream='http://grafana:3000/grafana/')),
+    path('grafana/', ProxyView.as_view(upstream='http://grafana:3000/grafana/'), {'path': ''}),
 
     # Reverse Proxy for Prometheus
     path('prometheus/<path:path>', ProxyView.as_view(upstream='http://prometheus-service:9090/prometheus/')),
-    path('prometheus/', ProxyView.as_view(upstream='http://prometheus-service:9090/prometheus/')),
+    path('prometheus/', ProxyView.as_view(upstream='http://prometheus-service:9090/prometheus/'), {'path': ''}),
 ]
