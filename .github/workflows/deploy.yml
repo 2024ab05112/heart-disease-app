@@ -57,7 +57,15 @@ jobs:
 
       - name: Start AKS Cluster (if stopped)
         run: |
-          az aks start --resource-group ${{ env.RESOURCE_GROUP }} --name ${{ env.CLUSTER_NAME }}
+          # Check if cluster is stopped before starting
+          STATUS=$(az aks show --resource-group ${{ env.RESOURCE_GROUP }} --name ${{ env.CLUSTER_NAME }} --query "powerState.code" -o tsv)
+          echo "Current Cluster Status: $STATUS"
+          if [ "$STATUS" == "Stopped" ]; then
+            echo "Cluster is stopped. Starting it now..."
+            az aks start --resource-group ${{ env.RESOURCE_GROUP }} --name ${{ env.CLUSTER_NAME }}
+          else
+            echo "Cluster is already running or in transition. Skipping start."
+          fi
 
       - name: Set up kubelogin for non-interactive login
         uses: azure/use-kubelogin@v1
