@@ -7,14 +7,17 @@ urlpatterns = [
     path('', include('webapp.urls')),
     
     # Custom Proxy for Backend API
-    path('api/<path:path>', proxy_view, {'upstream_url': 'http://heart-disease-service'}),
-    path('api/', proxy_view, {'upstream_url': 'http://heart-disease-service', 'path': ''}),
+    # Service Name: heart-disease-service
+    path('api/<path:path>', proxy_view, {'upstream_url': 'http://heart-disease-service.default.svc.cluster.local'}),
+    path('api/', proxy_view, {'upstream_url': 'http://heart-disease-service.default.svc.cluster.local', 'path': ''}),
 
     # Custom Proxy for Grafana
-    path('grafana/<path:path>', proxy_view, {'upstream_url': 'http://grafana:3000/grafana'}),
-    path('grafana/', proxy_view, {'upstream_url': 'http://grafana:3000/grafana', 'path': ''}),
+    # Service Name: grafana
+    path('grafana/<path:path>', proxy_view, {'upstream_url': 'http://grafana.default.svc.cluster.local:3000/grafana'}),
+    path('grafana/', proxy_view, {'upstream_url': 'http://grafana.default.svc.cluster.local:3000/grafana', 'path': ''}),
 
     # Custom Proxy for Prometheus
-    path('prometheus/<path:path>', proxy_view, {'upstream_url': 'http://prometheus-service:9090/prometheus'}),
-    path('prometheus/', proxy_view, {'upstream_url': 'http://prometheus-service:9090/prometheus', 'path': ''}),
+    # Service Name: prometheus (NOT prometheus-service)
+    path('prometheus/<path:path>', proxy_view, {'upstream_url': 'http://prometheus.default.svc.cluster.local:9090/prometheus'}),
+    path('prometheus/', proxy_view, {'upstream_url': 'http://prometheus.default.svc.cluster.local:9090/prometheus', 'path': ''}),
 ]
