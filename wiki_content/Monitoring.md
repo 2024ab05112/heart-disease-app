@@ -2,11 +2,11 @@
 
 This guide explains how to monitor the health and performance of the Heart Disease Prediction API using the integrated Prometheus and Grafana stack.
 
-## 📊 Overview
+## Overview
 - **Prometheus**: Collects metrics from the backend `/metrics` endpoint every 15 seconds.
 - **Grafana**: Visualizes these metrics through interactive dashboards.
 
-## 🛠️ Accessing the Dashboards
+## Accessing the Dashboards
 
 ### 1. FQDN Setup (One-Time)
 To access Grafana via `http://grafana.mlops.local`, add the following to your `/etc/hosts` file:
@@ -23,7 +23,7 @@ sudo nano /etc/hosts
 
 ### 2. Open Grafana
 Go to your browser and visit:  
-👉 **http://grafana.mlops.local**
+**http://grafana.mlops.local**
 
 ### 3. Login
 - **Username**: `admin`
@@ -62,7 +62,7 @@ See which API endpoints are being hit (`/predict` vs `/`).
 -   **Title**: Traffic by Endpoint
 -   **Type**: Pie Chart
 
-## 🚨 Troubleshooting
+## Troubleshooting
 **"No Data" in Graphs?**
 1.  Ensure the backend is running and reachable.
 2.  Generate some traffic! The metrics only appear after requests are made.
