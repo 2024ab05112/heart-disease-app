@@ -84,6 +84,7 @@ jobs:
           action: deploy
           manifests: |
             k8s/backend/deployment.yml
+            k8s/backend/service.yml
             k8s/frontend/deployment.yml
             k8s/common/ingress.yml
           images: |
