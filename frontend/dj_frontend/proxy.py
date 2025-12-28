@@ -49,9 +49,21 @@ def proxy_view(request, upstream_url, path=''):
     )
 
     # Forward headers back to client
-    excluded_headers = ['content-encoding', 'content-length', 'transfer-encoding', 'connection']
+    excluded_headers = ['content-encoding', 'content-length', 'transfer-encoding', 'connection', 'set-cookie']
     for key, value in response.headers.items():
         if key.lower() not in excluded_headers:
             proxy_response[key] = value
 
+    # Explicitly handle cookies to ensure attributes are preserved
+    for cookie in response.cookies:
+        proxy_response.set_cookie(
+            key=cookie.name,
+            value=cookie.value,
+            domain=cookie.domain,
+            path=cookie.path,
+            secure=cookie.secure,
+            httponly=cookie.has_nonstandard_attr('HttpOnly') or False,
+            expires=cookie.expires
+        )
+            
     return proxy_response
