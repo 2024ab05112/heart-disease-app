@@ -97,6 +97,13 @@ jobs:
             k8s/backend/deployment.yml
             k8s/backend/service.yml
             k8s/frontend/deployment.yml
+            k8s/monitoring/prometheus-config.yml
+            k8s/monitoring/prometheus-deployment.yml
+            k8s/monitoring/prometheus-service.yml
+            k8s/monitoring/grafana-config.yml
+            k8s/monitoring/grafana-dashboards.yml
+            k8s/monitoring/grafana-deployment.yml
+            k8s/monitoring/grafana-service.yml
             k8s/common/ingress.yml
           images: |
             ${{ env.DOCKER_USERNAME }}/heart-disease-api:${{ github.sha }}
