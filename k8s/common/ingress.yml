@@ -15,7 +15,7 @@ spec:
     http:
       paths:
       # 1. API - Matches /api or /api/...
-      - path: ^/api(/|$)(.*)
+      - path: /api(/|$)(.*)
         pathType: ImplementationSpecific
         backend:
           service:
@@ -23,7 +23,7 @@ spec:
             port:
               number: 80
       # 2. Grafana - Matches /grafana or /grafana/...
-      - path: ^/grafana(/|$)(.*)
+      - path: /grafana(/|$)(.*)
         pathType: ImplementationSpecific
         backend:
           service:
@@ -31,7 +31,7 @@ spec:
             port:
               number: 3000
       # 3. Prometheus - Matches /prometheus or /prometheus/...
-      - path: ^/prometheus(/|$)(.*)
+      - path: /prometheus(/|$)(.*)
         pathType: ImplementationSpecific
         backend:
           service:
@@ -39,7 +39,7 @@ spec:
             port:
               number: 9090
       # 4. Frontend - Catch-All regex
-      - path: ^/(.*)
+      - path: /()(.*)
         pathType: ImplementationSpecific
         backend:
           service:
