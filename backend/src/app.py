@@ -30,6 +30,10 @@ root_path = os.getenv("ROOT_PATH", "")
 
 app = FastAPI(title="Heart Disease Prediction API", root_path=root_path)
 
+@app.get("/health")
+def health():
+    return {"status": "ok"}
+
 # Create a router with prefix /api
 from fastapi import APIRouter
 router = APIRouter(prefix="/api")
