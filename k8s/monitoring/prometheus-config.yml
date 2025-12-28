@@ -16,4 +16,4 @@ data:
         metrics_path: /metrics
         static_configs:
           - targets:
-              - heart-disease-service.default.svc.cluster.local:80
+              - heart-disease-service:80
