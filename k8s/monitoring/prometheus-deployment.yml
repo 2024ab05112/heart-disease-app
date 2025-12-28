@@ -24,6 +24,8 @@ spec:
           image: prom/prometheus
           args:
             - "--config.file=/etc/prometheus/prometheus.yml"
+            - "--storage.tsdb.path=/prometheus/"
+            - "--web.external-url=/prometheus/"
           ports:
             - name: http
               containerPort: 9090

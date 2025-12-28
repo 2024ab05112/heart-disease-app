@@ -8,24 +8,18 @@ This guide explains how to monitor the health and performance of the Heart Disea
 
 ## Accessing the Dashboards
 
-### 1. FQDN Setup (One-Time)
-To access Grafana via `http://grafana.mlops.local`, add the following to your `/etc/hosts` file:
+### 1. Unified Access
+The entire application stack is exposed under a single domain:
 
-```bash
-# Get Minikube IP
-minikube ip
-# Output example: 192.168.49.2
+| Service | URL |
+|---------|-----|
+| **Web App** | `http://heart-disease-2024ab05112.centralindia.cloudapp.azure.com` |
+| **Grafana** | `http://heart-disease-2024ab05112.centralindia.cloudapp.azure.com/grafana` |
+| **Prometheus**| `http://heart-disease-2024ab05112.centralindia.cloudapp.azure.com/prometheus` |
+| **API Docs** | `http://heart-disease-2024ab05112.centralindia.cloudapp.azure.com/api/docs` |
 
-# Edit hosts file (sudo reqd)
-# Add: <minikube-ip> grafana.mlops.local prometheus.mlops.local
-sudo nano /etc/hosts
-```
-
-### 2. Open Grafana
-Go to your browser and visit:  
-**http://grafana.mlops.local**
-
-### 3. Login
+### 2. Login
+Go to **Grafana URL** above and login:
 - **Username**: `admin`
 - **Password**: `admin`
 

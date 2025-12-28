@@ -26,6 +26,11 @@ spec:
             - name: http
               containerPort: 3000
               protocol: TCP
+          env:
+            - name: GF_SERVER_ROOT_URL
+              value: "https://heart-disease-2024ab05112.centralindia.cloudapp.azure.com/grafana/"
+            - name: GF_SERVER_SERVE_FROM_SUB_PATH
+              value: "true"
           resources:
             requests:
               cpu: "100m"

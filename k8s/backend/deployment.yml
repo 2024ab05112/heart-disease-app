@@ -23,6 +23,9 @@ spec:
         - name: heart-disease-api
           image: 2024ab05112/heart-disease-api:latest
           imagePullPolicy: Always
+          env:
+            - name: ROOT_PATH
+              value: "/api"
           ports:
             - name: http
               containerPort: 8000

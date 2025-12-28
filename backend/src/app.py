@@ -19,10 +19,14 @@ logger = logging.getLogger(__name__)
 
 
 # Load the trained model exported by the training pipeline
+# Load the trained model exported by the training pipeline
 model = mlflow.sklearn.load_model(model_uri="exported_model")
 
+# Get root_path from environment variable (default to empty string)
+import os
+root_path = os.getenv("ROOT_PATH", "")
 
-app = FastAPI(title="Heart Disease Prediction API")
+app = FastAPI(title="Heart Disease Prediction API", root_path=root_path)
 
 
 class PatientInput(BaseModel):

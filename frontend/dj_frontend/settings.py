@@ -7,7 +7,7 @@ SECRET_KEY = 'django-insecure-demo-key-for-mlops-assignment'
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['*', '.azure.com', '.nip.io']
 
 INSTALLED_APPS = [
     'django.contrib.admin',

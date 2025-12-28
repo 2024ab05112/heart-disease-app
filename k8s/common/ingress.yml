@@ -1,22 +1,48 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: heart-disease-ingress
+  name: heart-disease-unified-ingress
   labels:
-    app.kubernetes.io/name: heart-disease-gateway
+    app.kubernetes.io/name: unified-gateway
     app.kubernetes.io/part-of: heart-disease-prediction
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/use-regex: "true"
 spec:
   ingressClassName: nginx
   rules:
-  - host: heart.local
+  - host: heart-disease-2024ab05112.centralindia.cloudapp.azure.com
     http:
       paths:
-      - path: /
+      # Frontend (Root)
+      - path: /()(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: heart-disease-frontend-service
+            port:
+              number: 30008
+      # Backend API
+      - path: /api(/|$)(.*)
         pathType: Prefix
         backend:
           service:
             name: heart-disease-service
             port:
               number: 80
+      # Grafana
+      - path: /grafana(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: grafana
+            port:
+              number: 3000
+      # Prometheus
+      - path: /prometheus(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: prometheus-service
+            port:
+              number: 9090
