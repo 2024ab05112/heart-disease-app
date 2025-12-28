@@ -16,7 +16,29 @@ env:
   CLUSTER_NAME: "HeartDiseaseCluster"
 
 jobs:
+  check-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+      frontend: ${{ steps.filter.outputs.frontend }}
+      k8s: ${{ steps.filter.outputs.k8s }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            backend:
+              - 'backend/**'
+            frontend:
+              - 'frontend/**'
+            k8s:
+              - 'k8s/**'
+              - '.github/workflows/**'
+
   build-and-push:
+    needs: check-changes
+    if: ${{ needs.check-changes.outputs.backend == 'true' || needs.check-changes.outputs.frontend == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -29,6 +51,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build and push Backend image
+        if: needs.check-changes.outputs.backend == 'true'
         uses: docker/build-push-action@v5
         with:
           context: ./backend
@@ -38,6 +61,7 @@ jobs:
             ${{ env.DOCKER_USERNAME }}/heart-disease-api:latest
 
       - name: Build and push Frontend image
+        if: needs.check-changes.outputs.frontend == 'true'
         uses: docker/build-push-action@v5
         with:
           context: ./frontend
@@ -48,7 +72,12 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
-    needs: build-and-push
+    needs: [check-changes, build-and-push]
+    if: |
+      always() &&
+      (needs.check-changes.result == 'success') &&
+      (needs.build-and-push.result == 'success' || needs.build-and-push.result == 'skipped') &&
+      (needs.check-changes.outputs.k8s == 'true' || needs.check-changes.outputs.backend == 'true' || needs.check-changes.outputs.frontend == 'true')
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -60,7 +89,6 @@ jobs:
 
       - name: Start AKS Cluster (if stopped)
         run: |
-          # Check if cluster is stopped before starting
           STATUS=$(az aks show --resource-group ${{ env.RESOURCE_GROUP }} --name ${{ env.CLUSTER_NAME }} --query "powerState.code" -o tsv)
           echo "Current Cluster Status: $STATUS"
           if [ "$STATUS" == "Stopped" ]; then
@@ -70,7 +98,7 @@ jobs:
             echo "Cluster is already running or in transition. Skipping start."
           fi
 
-      - name: Set up kubelogin for non-interactive login
+      - name: Set up kubelogin
         uses: azure/use-kubelogin@v1
         with:
           kubelogin-version: 'v0.0.25'
@@ -85,9 +113,29 @@ jobs:
 
       - name: Replace image tags in manifests
         run: |
-          # Replace :latest with :<commit-sha> to ensure new deployment
-          sed -i "s|image: .*/heart-disease-api:latest|image: ${{ env.DOCKER_USERNAME }}/heart-disease-api:${{ github.sha }}|g" k8s/backend/deployment.yml
-          sed -i "s|image: .*/heart-disease-frontend:latest|image: ${{ env.DOCKER_USERNAME }}/heart-disease-frontend:${{ github.sha }}|g" k8s/frontend/deployment.yml
+          # Logic: Use SHA if code changed, otherwise use 'latest' (assumed stable)
+          
+          # 1. Backend Tag
+          BACKEND_TAG="latest"
+          if [[ "${{ needs.check-changes.outputs.backend }}" == "true" ]]; then
+            BACKEND_TAG="${{ github.sha }}"
+            echo "Backend changed. Using SHA: $BACKEND_TAG"
+          else
+            echo "Backend unchanged. Using existing tag: $BACKEND_TAG"
+          fi
+
+          # 2. Frontend Tag
+          FRONTEND_TAG="latest"
+          if [[ "${{ needs.check-changes.outputs.frontend }}" == "true" ]]; then
+            FRONTEND_TAG="${{ github.sha }}"
+            echo "Frontend changed. Using SHA: $FRONTEND_TAG"
+          else
+             echo "Frontend unchanged. Using existing tag: $FRONTEND_TAG"
+          fi
+
+          # Replace in manifests
+          sed -i "s|image: .*/heart-disease-api:latest|image: ${{ env.DOCKER_USERNAME }}/heart-disease-api:$BACKEND_TAG|g" k8s/backend/deployment.yml
+          sed -i "s|image: .*/heart-disease-frontend:latest|image: ${{ env.DOCKER_USERNAME }}/heart-disease-frontend:$FRONTEND_TAG|g" k8s/frontend/deployment.yml
 
       - name: Deploy to AKS
         uses: Azure/k8s-deploy@v4
@@ -105,6 +153,3 @@ jobs:
             k8s/monitoring/grafana-deployment.yml
             k8s/monitoring/grafana-service.yml
             k8s/common/ingress.yml
-          images: |
-            ${{ env.DOCKER_USERNAME }}/heart-disease-api:${{ github.sha }}
-            ${{ env.DOCKER_USERNAME }}/heart-disease-frontend:${{ github.sha }}
