@@ -1,6 +1,8 @@
 import requests
 from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
 
+@csrf_exempt
 def proxy_view(request, upstream_url, path=''):
     """
     A simple reverse proxy view using requests.
