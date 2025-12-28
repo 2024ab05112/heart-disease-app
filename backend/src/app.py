@@ -28,7 +28,12 @@ model = mlflow.sklearn.load_model(model_uri="exported_model")
 import os
 root_path = os.getenv("ROOT_PATH", "")
 
-app = FastAPI(title="Heart Disease Prediction API", root_path=root_path)
+app = FastAPI(
+    title="Heart Disease Prediction API", 
+    root_path=root_path,
+    docs_url="/api/docs",
+    openapi_url="/api/openapi.json"
+)
 
 @app.get("/health")
 def health():
