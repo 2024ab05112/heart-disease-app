@@ -85,3 +85,5 @@ minikube service grafana --url
     - Processes requests and returns predictions.
 
 3.  **Communication**: The Frontend talks to the Backend using the internal K8s DNS name status http://heart-disease-service:80.
+
+For a detailed breakdown of the service connections and a visual workflow diagram, please refer to [SERVICE_ARCHITECTURE.md](SERVICE_ARCHITECTURE.md).
