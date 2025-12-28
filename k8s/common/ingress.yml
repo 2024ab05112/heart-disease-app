@@ -16,7 +16,7 @@ spec:
       paths:
       # 1. API - Matches /api or /api/...
       - path: ^/api(/|$)(.*)
-        pathType: Prefix
+        pathType: ImplementationSpecific
         backend:
           service:
             name: heart-disease-service
@@ -24,7 +24,7 @@ spec:
               number: 80
       # 2. Grafana - Matches /grafana or /grafana/...
       - path: ^/grafana(/|$)(.*)
-        pathType: Prefix
+        pathType: ImplementationSpecific
         backend:
           service:
             name: grafana
@@ -32,7 +32,7 @@ spec:
               number: 3000
       # 3. Prometheus - Matches /prometheus or /prometheus/...
       - path: ^/prometheus(/|$)(.*)
-        pathType: Prefix
+        pathType: ImplementationSpecific
         backend:
           service:
             name: prometheus-service
@@ -40,7 +40,7 @@ spec:
               number: 9090
       # 4. Frontend - Catch-All regex
       - path: ^/(.*)
-        pathType: Prefix
+        pathType: ImplementationSpecific
         backend:
           service:
             name: heart-disease-frontend-service
