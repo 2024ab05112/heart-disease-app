@@ -5,40 +5,14 @@ metadata:
   labels:
     app.kubernetes.io/name: unified-gateway
     app.kubernetes.io/part-of: heart-disease-prediction
-  annotations:
-    # Use standard Regex matching. NO REWRITE TARGET.
-    nginx.ingress.kubernetes.io/use-regex: "true"
 spec:
   ingressClassName: nginx
   rules:
   - host: heart-disease-2024ab05112.centralindia.cloudapp.azure.com
     http:
       paths:
-      # 1. API - Matches /api - Native Path
-      - path: /api(/|$)(.*)
-        pathType: ImplementationSpecific
-        backend:
-          service:
-            name: heart-disease-service
-            port:
-              number: 80
-      # 2. Grafana - Matches /grafana - Native Path
-      - path: /grafana(/|$)(.*)
-        pathType: ImplementationSpecific
-        backend:
-          service:
-            name: grafana
-            port:
-              number: 3000
-      # 3. Prometheus - Matches /prometheus - Native Path
-      - path: /prometheus(/|$)(.*)
-        pathType: ImplementationSpecific
-        backend:
-          service:
-            name: prometheus-service
-            port:
-              number: 9090
-      # 4. Frontend - Matches Root
+      # Simple Catch-All. Everything goes to Django Frontend.
+      # Django will then Reverse Proxy /api, /grafana, etc. internally.
       - path: /
         pathType: Prefix
         backend:
