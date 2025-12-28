@@ -97,7 +97,8 @@ jobs:
             k8s/backend/deployment.yml
             k8s/backend/service.yml
             k8s/frontend/deployment.yml
-            k8s/common/ingress.yml
+            k8s/common/ingress-frontend.yml
+            k8s/common/ingress-backend.yml
           images: |
             ${{ env.DOCKER_USERNAME }}/heart-disease-api:${{ github.sha }}
             ${{ env.DOCKER_USERNAME }}/heart-disease-frontend:${{ github.sha }}
