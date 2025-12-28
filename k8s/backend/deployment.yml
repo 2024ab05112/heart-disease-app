@@ -23,9 +23,8 @@ spec:
         - name: heart-disease-api
           image: 2024ab05112/heart-disease-api:latest
           imagePullPolicy: Always
-          env:
-            - name: ROOT_PATH
-              value: "/api"
+          # ROOT_PATH removed to avoid Double-Prefix stripping.
+          # We use APIRouter(prefix="/api"), so app expects full path /api/...
           ports:
             - name: http
               containerPort: 8000

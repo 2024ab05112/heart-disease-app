@@ -8,8 +8,8 @@ urlpatterns = [
     
     # Custom Proxy for Backend API
     # Service Name: heart-disease-service
-    path('api/<path:path>', proxy_view, {'upstream_url': 'http://heart-disease-service:80'}),
-    path('api/', proxy_view, {'upstream_url': 'http://heart-disease-service:80', 'path': ''}),
+    path('api/<path:path>', proxy_view, {'upstream_url': 'http://heart-disease-service:80/api'}),
+    path('api/', proxy_view, {'upstream_url': 'http://heart-disease-service:80/api/', 'path': ''}),
 
     # Custom Proxy for Grafana
     # Service Name: grafana
