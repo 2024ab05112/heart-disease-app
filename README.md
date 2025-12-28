@@ -1,6 +1,6 @@
 # Heart Disease Prediction System - MLOps Assignment
 
-This project demonstrates an end-to-end MLOps pipeline for a Heart Disease Prediction application. It consists of a FastAPI backend for model serving and a Django frontend for user interaction, deployed on Kubernetes (Minikube).
+This project demonstrates an end-to-end MLOps pipeline for a Heart Disease Prediction application. It consists of a FastAPI backend for model serving and a Django frontend for user interaction, capable of running locally on **Minikube** or in production on **Azure Kubernetes Service (AKS)**.
 
 ## Project Structure
 
@@ -71,6 +71,16 @@ Example Output: `http://192.168.49.2:30008`
 ```bash
 minikube service grafana --url
 ```
+
+## Production Deployment (Azure AKS)
+
+This project includes a fully automated CI/CD pipeline using **GitHub Actions** to deploy to Azure Kubernetes Service (AKS).
+
+- **Pipeline**: Automatically builds images and deploys manifests on pushes to `main`.
+- **Cost Optimization**: The pipeline automatically **starts** the AKS cluster if it is stopped.
+- **Dynamic Updates**: Uses specific commit SHAs for image tagging to ensure reliable rollbacks.
+
+For detailed instructions on setting up and managing the cloud deployment, please refer to the [Cloud Deployment Guide](wiki_content/AKS_Deployment.md) or the Wiki.
 
 ## Architecture
 

@@ -17,11 +17,12 @@ This project is an end-to-end MLOps solution designed to predict the presence of
 | **Backend** | FastAPI, Uvicorn, Python |
 | **ML Model** | Scikit-Learn (Logistic Regression/Random Forest) |
 | **Containerization** | Docker |
-| **Orchestration** | Kubernetes (Minikube) |
+| **Orchestration** | Kubernetes (Minikube / Azure AKS) |
 | **CI/CD** | GitHub Actions |
 
 ## Documentation Index
 - **[[Setup and Installation|Setup]]**: Step-by-step guide to get the project running locally.
+- **[[Cloud Deployment (AKS)|AKS_Deployment]]**: Production deployment guide using Azure and GitHub Actions.
 - **[[Architecture Details|Architecture]]**: Deep dive into the system design and workflows.
 - **[[API Documentation|API]]**: Details on the backend endpoints and usage.
 - **[[Monitoring Guide|Monitoring]]**: How to use Prometheus and Grafana dashboards.
