@@ -2,7 +2,7 @@
 
 This document provides a deep dive into the system's design, covering the data flow, service interactions, and infrastructure components.
 
-## 🏗️ High-Level Architecture
+## High-Level Architecture
 
 The system is designed as a microservices application deployed on Kubernetes. It separates the user interface (Frontend) from the business logic and inference engine (Backend).
 
@@ -69,7 +69,7 @@ For quick reference in terminal viewers:
 +------------------------+
 ```
 
-## 🔍 Component Breakdown
+## Component Breakdown
 
 ### 1. Frontend Service (Django)
 - **Role**: Serves the user interface and handles user interactions.
@@ -89,7 +89,7 @@ For quick reference in terminal viewers:
 - **Prometheus**: Scrapes performance metrics (request latency, generic health) from the backend.
 - **Grafana**: Visualizes these metrics on dashboards for system health monitoring.
 
-## 🔄 Data Flow Scenario
+## Data Flow Scenario
 
 1. **Input**: User enters "Age: 45, Cholesterol: 250..." in the UI.
 2. **Processing**: Frontend sends this as a JSON payload to `http://heart-disease-service/predict`.

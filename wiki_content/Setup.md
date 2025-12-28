@@ -8,7 +8,7 @@ Before starting, ensure you have the following tools installed:
 - **Kubectl**: Command-line tool for Kubernetes.
 - **Python 3.9+**: For local development (optional).
 
-## 🚀 Quick Start (Kubernetes)
+## Quick Start (Kubernetes)
 
 ### 1. Start Minikube
 Initialize your local Kubernetes cluster:
@@ -52,7 +52,7 @@ minikube service heart-disease-frontend-service --url
 ```
 Open the provided URL in your browser to use the application.
 
-## 💻 Local Development (Run without Docker)
+## Local Development (Run without Docker)
 
 **Backend:**
 1. Navigate to `backend/`.
