@@ -14,14 +14,6 @@ spec:
   - host: heart-disease-2024ab05112.centralindia.cloudapp.azure.com
     http:
       paths:
-      # Frontend (Root)
-      - path: /()(.*)
-        pathType: Prefix
-        backend:
-          service:
-            name: heart-disease-frontend-service
-            port:
-              number: 30008
       # Backend API
       - path: /api(/|$)(.*)
         pathType: Prefix
@@ -46,3 +38,11 @@ spec:
             name: prometheus-service
             port:
               number: 9090
+      # Frontend (Root) - Catch All
+      - path: /()(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: heart-disease-frontend-service
+            port:
+              number: 30008
