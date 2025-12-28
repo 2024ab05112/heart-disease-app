@@ -23,11 +23,16 @@ logger = logging.getLogger(__name__)
 model = mlflow.sklearn.load_model(model_uri="exported_model")
 
 # Get root_path from environment variable (default to empty string)
+# Note: With native /api prefix in routes, we might not strictly need root_path proxy logic, 
+# but keeping it for Swagger UI doc generation if needed.
 import os
 root_path = os.getenv("ROOT_PATH", "")
 
 app = FastAPI(title="Heart Disease Prediction API", root_path=root_path)
 
+# Create a router with prefix /api
+from fastapi import APIRouter
+router = APIRouter(prefix="/api")
 
 class PatientInput(BaseModel):
     age: int
@@ -59,17 +64,17 @@ async def metrics_middleware(request: Request, call_next):
     return response
 
 
-@app.get("/metrics")
+@router.get("/metrics")
 def metrics():
     return Response(generate_latest(), media_type="text/plain")
 
 
-@app.get("/")
+@router.get("/")
 def health_check():
     return "API is running"
 
 
-@app.post("/predict")
+@router.post("/predict")
 def predict(data: PatientInput):
     logger.info("Prediction request received: %s", data)
 
@@ -86,3 +91,10 @@ def predict(data: PatientInput):
 
     logger.info("Prediction=%s, confidence=%s", prediction, confidence)
     return {"prediction": prediction, "confidence": confidence}
+
+# Include the router in the app
+app.include_router(router)
+
+# Also expose health check on root for internal probes if needed (optional)
+# But strictly speaking, our Ingress only sends /api to us.
+# Liveness probe might check /api/
