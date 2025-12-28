@@ -134,17 +134,17 @@ jobs:
           fi
 
           # Replace in manifests
-          sed -i "s|image: .*/heart-disease-api:latest|image: ${{ env.DOCKER_USERNAME }}/heart-disease-api:$BACKEND_TAG|g" k8s/backend/deployment.yml
-          sed -i "s|image: .*/heart-disease-frontend:latest|image: ${{ env.DOCKER_USERNAME }}/heart-disease-frontend:$FRONTEND_TAG|g" k8s/frontend/deployment.yml
+          sed -i "s|image: .*/heart-disease-api:latest|image: ${{ env.DOCKER_USERNAME }}/heart-disease-api:$BACKEND_TAG|g" k8s/backend/backend-deployment.yml
+          sed -i "s|image: .*/heart-disease-frontend:latest|image: ${{ env.DOCKER_USERNAME }}/heart-disease-frontend:$FRONTEND_TAG|g" k8s/frontend/frontend-deployment.yml
 
       - name: Deploy to AKS
         uses: Azure/k8s-deploy@v4
         with:
           action: deploy
           manifests: |
-            k8s/backend/deployment.yml
-            k8s/backend/service.yml
-            k8s/frontend/deployment.yml
+            k8s/backend/backend-deployment.yml
+            k8s/backend/backend-service.yml
+            k8s/frontend/frontend-deployment.yml
             k8s/monitoring/prometheus-config.yml
             k8s/monitoring/prometheus-deployment.yml
             k8s/monitoring/prometheus-service.yml
