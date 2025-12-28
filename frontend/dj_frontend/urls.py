@@ -14,10 +14,10 @@ urlpatterns = [
     # Custom Proxy for Grafana
     # Service Name: grafana
     path('grafana/<path:path>', proxy_view, {'upstream_url': 'http://grafana:3000/grafana'}),
-    path('grafana/', proxy_view, {'upstream_url': 'http://grafana:3000/grafana', 'path': ''}),
+    path('grafana/', proxy_view, {'upstream_url': 'http://grafana:3000/grafana/', 'path': ''}),
 
     # Custom Proxy for Prometheus
     # Service Name: prometheus
     path('prometheus/<path:path>', proxy_view, {'upstream_url': 'http://prometheus:9090/prometheus'}),
-    path('prometheus/', proxy_view, {'upstream_url': 'http://prometheus:9090/prometheus', 'path': ''}),
+    path('prometheus/', proxy_view, {'upstream_url': 'http://prometheus:9090/prometheus/', 'path': ''}),
 ]
