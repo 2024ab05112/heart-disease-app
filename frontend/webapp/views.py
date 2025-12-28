@@ -4,7 +4,7 @@ import json
 
 # URL of the internal Kubernetes service
 # Service Name: heart-disease-service, Port: 80
-API_URL = "http://heart-disease-service:80/predict"
+API_URL = "http://heart-disease-service:80/api/predict"
 
 def index(request):
     prediction = None
