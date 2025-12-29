@@ -8,7 +8,7 @@ DATA_PATH = Path("data/raw")
 def download_data():
     DATA_PATH.mkdir(parents=True, exist_ok=True)
 
-    url = "https://archive.ics.uci.edu/ml/machine-learning-databases/"
+    url = "https://archive.ics.uci.edu/ml/machine-learning-databasessss/"
     url += "heart-disease/processed.cleveland.data"
 
     raw_file = os.path.join(DATA_PATH, "processed.cleveland.data")
