@@ -71,8 +71,12 @@ jobs:
 
 
   build-and-push:
-    needs: check-changes
-    if: ${{ needs.check-changes.outputs.backend == 'true' || needs.check-changes.outputs.frontend == 'true' }}
+    needs: [check-changes, unit-test]
+    if: |
+      always() &&
+      needs.check-changes.result == 'success' &&
+      (needs.unit-test.result == 'success' || needs.unit-test.result == 'skipped') &&
+      (needs.check-changes.outputs.backend == 'true' || needs.check-changes.outputs.frontend == 'true')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
