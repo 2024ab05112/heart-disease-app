@@ -49,8 +49,7 @@ jobs:
       - name: Install dependencies
         working-directory: ./backend
         run: |
-          pip install -r requirements.txt
-          pip install flake8 httpx pytest
+          pip install -r unit-test-requirement.txt
       - name: Lint with flake8
         working-directory: ./backend
         run: |
