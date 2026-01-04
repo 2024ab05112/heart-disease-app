@@ -1,99 +1,61 @@
-# Heart Disease Prediction System - MLOps Assignment
+# Heart Disease Prediction: End-to-End MLOps Solution
 
-This project demonstrates an end-to-end MLOps pipeline for a Heart Disease Prediction application. It consists of a FastAPI backend for model serving and a Django frontend for user interaction, capable of running locally on **Minikube** or in production on **Azure Kubernetes Service (AKS)**.
+[![CI/CD Pipeline](https://github.com/2024ab05112/heart-disease-app/actions/workflows/deploy.yml/badge.svg)](https://github.com/2024ab05112/heart-disease-app/actions)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## Project Structure
+A production-ready machine learning system for heart disease risk prediction, featuring automated CI/CD, experiment tracking with MLflow, and scalable deployment on Azure Kubernetes Service (AKS).
 
-- **backend/**:
-    - **src/**: FastAPI application and ML logic.
-    - **Dockerfile**: Backend build instructions.
-    - **requirements.txt**: Python dependencies.
-- **frontend/**: Django application (User Interface).
-- **k8s/**: Kubernetes manifests.
-    - **backend/**: Deployments for the API.
-    - **frontend/**: Deployments for the UI.
-    - **monitoring/**: Prometheus and Grafana manifests.
-    - **common/**: Ingress references.
-- **docs/**: Project documentation, reports, and assignment files.
+## Live Access
+- **Web Application:** [heart-disease-2024ab05112.centralindia.cloudapp.azure.com](http://heart-disease-2024ab05112.centralindia.cloudapp.azure.com/)
+- **API Documentation:** [Swagger UI](http://heart-disease-2024ab05112.centralindia.cloudapp.azure.com/api/docs)
+- **Monitoring:** [Grafana Dashboard](http://heart-disease-2024ab05112.centralindia.cloudapp.azure.com/grafana/) | [Prometheus UI](http://heart-disease-2024ab05112.centralindia.cloudapp.azure.com/prometheus/)
 
-## How to Run (Minikube)
+---
 
-### Prerequisites
-- Docker
-- Minikube
-- Kubectl
+## Professional Documentation
+For comprehensive details on EDA, modelling choices, experiment tracking, and pipeline design, please refer to the official project reports:
+- [**Detailed Project Report (Markdown)**](docs/Project_Report.md)
+- [**Detailed Project Report (Word DOCX)**](docs/Project_Report.docx)
 
-### Step 1: Start Minikube
-```bash
-minikube start
+---
+
+## System Architecture
+The system utilizes a microservices architecture orchestrated by Kubernetes (AKS) and routed via a Django Reverse Proxy.
+
+```mermaid
+graph TD
+    User((User)) -->|HTTPS| Proxy[Django Proxy]
+    Proxy -->|API| Backend[Backend API]
+    Proxy -->|UI| Frontend[Frontend Web]
+    Backend -->|Track| MLflow[(MLflow)]
+    Backend -->|Metrics| Prometheus[Prometheus]
+    Prometheus -->|Visualize| Grafana[Grafana]
 ```
 
-### Step 2: Build and Push Docker Images
-We need to build the images and push them to Docker Hub so Kubernetes can pull them.
+---
 
-**(First, log in to Docker Hub: `docker login`)**
+## Quick Start (Local Setup)
 
-**Backend Image:**
+The easiest way to run the entire stack locally is via **Docker Compose**. This will build all images from scratch and orchestrate the services.
+
+### 1. Prerequisites
+- Docker & Docker Compose installed.
+- Repository cloned.
+
+### 2. Execution
 ```bash
-docker build -t 2024ab05112/heart-disease-api:latest backend/
-docker push 2024ab05112/heart-disease-api:latest
+# Build and start all services (Backend, Frontend, MLflow)
+docker-compose up --build
 ```
+The application will be available at `http://localhost`.
 
-**Frontend Image:**
-```bash
-docker build -t 2024ab05112/heart-disease-frontend:latest frontend/
-docker push 2024ab05112/heart-disease-frontend:latest
-```
+---
 
-### Step 3: Deploy to Kubernetes
-Apply the Kubernetes manifests from the organized directories.
+## CI/CD Workflow
+The project follows a robust automation lifecycle via GitHub Actions:
+1. **Linting & Testing:** Automated checks using `flake8` and `pytest`.
+2. **Containerization:** Concurrent Docker builds for high efficiency.
+3. **Deployment:** Automated rollout to Azure Kubernetes Service on every push to `main`.
 
-```bash
-# Deploy Backend & Frontend
-kubectl apply -f k8s/backend/
-kubectl apply -f k8s/frontend/
-kubectl apply -f k8s/common/
-
-# Deploy Monitoring Stack (Optional)
-kubectl apply -f k8s/monitoring/
-```
-
-### Step 4: Access the Application
-
-**Frontend UI:**
-To access the web interface:
-```bash
-minikube service heart-disease-frontend-service --url
-```
-Example Output: `http://192.168.49.2:30008`
-
-**Monitoring (Grafana):**
-```bash
-minikube service grafana --url
-```
-
-## Production Deployment (Azure AKS)
-
-This project includes a fully automated CI/CD pipeline using **GitHub Actions** to deploy to Azure Kubernetes Service (AKS).
-
-- **Pipeline**: Automatically builds images and deploys manifests on pushes to `main`.
-- **Cost Optimization**: The pipeline automatically **starts** the AKS cluster if it is stopped.
-- **Dynamic Updates**: Uses specific commit SHAs for image tagging to ensure reliable rollbacks.
-
-For detailed instructions on setting up and managing the cloud deployment, please refer to the [Cloud Deployment Guide](wiki_content/AKS_Deployment.md) or the Wiki.
-
-## Architecture
-
-1.  **Frontend (Django)**: 
-    - Exposed via NodePort 30008.
-    - Collects user input via a web form.
-    - Sends POST requests to the backend service.
-    
-2.  **Backend (FastAPI)**:
-    - Exposed via NodePort 30007 (and internally on port 80).
-    - Loads the trained ML model (exported_model).
-    - Processes requests and returns predictions.
-
-3.  **Communication**: The Frontend talks to the Backend using the internal K8s DNS name status http://heart-disease-service:80.
-
-For a detailed breakdown of the service connections and a visual workflow diagram, please refer to [SERVICE_ARCHITECTURE.md](SERVICE_ARCHITECTURE.md).
+---
+*Developed as part of the MLOps Assignment*
