@@ -1,4 +1,6 @@
+# Added Test commit for frontend application.
 FROM python:3.12-slim
+
 
 WORKDIR /app
 
