@@ -39,6 +39,10 @@ spec:
               value: "true"
             - name: GF_SECURITY_CSRF_ADDITIONAL_DOMAINS
               value: "heart-disease-2024ab05112.centralindia.cloudapp.azure.com"
+            - name: GF_AUTH_TOKEN_ROTATION_ENABLED
+              value: "false"
+            - name: GF_SESSION_LIFE_TIME
+              value: "86400"
           resources:
             requests:
               cpu: "100m"
