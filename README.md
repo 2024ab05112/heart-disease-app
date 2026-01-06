@@ -6,10 +6,10 @@
 A production-ready machine learning system for heart disease risk prediction, featuring automated CI/CD, experiment tracking with MLflow, and scalable deployment on Azure Kubernetes Service (AKS).
 
 ## Live Access
-Each component is accessible via its own dedicated FQDN:
+The entire stack is accessible via a single entry point using Ingress routing:
 - **Web Application:** [Frontend UI](http://heart-disease-2024ab05112.centralindia.cloudapp.azure.com/)
-- **API Documentation:** [Swagger UI](http://heart-disease-api-2024ab05112.centralindia.cloudapp.azure.com/api/docs)
-- **Monitoring:** [Grafana Dashboard](http://heart-disease-grafana-2024ab05112.centralindia.cloudapp.azure.com/) | [Prometheus UI](http://heart-disease-prom-2024ab05112.centralindia.cloudapp.azure.com/)
+- **API Documentation:** [Swagger UI](http://heart-disease-2024ab05112.centralindia.cloudapp.azure.com/api/docs)
+- **Monitoring:** [Grafana Dashboard](http://heart-disease-2024ab05112.centralindia.cloudapp.azure.com/grafana/) | [Prometheus UI](http://heart-disease-2024ab05112.centralindia.cloudapp.azure.com/prometheus/)
 
 ---
 
@@ -22,17 +22,19 @@ For comprehensive details on EDA, modelling choices, experiment tracking, and pi
 ---
 
 ## System Architecture
-The system utilizes a decentralized microservices architecture orchestrated by Kubernetes (AKS). Each service is exposed via an independent Azure Load Balancer.
+The system utilizes a unified microservices architecture routed via a high-performance **Nginx Ingress Controller**.
 
 ```mermaid
 graph TD
-    User((User)) -->|HTTP| Frontend[Frontend Web]
-    User -->|HTTP| API_Docs[API Swagger]
-    Frontend -->|Internal RPC| Backend[Backend API]
-    Backend -->|Track| MLflow[(MLflow)]
-    Backend -->|Metrics| Prometheus[Prometheus]
-    Prometheus -->|Visualize| Grafana[Grafana]
-    User -->|View Stats| Grafana
+    User((User)) -->|Single IP| Ingress[Nginx Ingress]
+    Ingress -->|/| Frontend[Frontend Web]
+    Ingress -->|/api| Backend[Backend API]
+    Ingress -->|/grafana| Grafana[Grafana]
+    Ingress -->|/prometheus| Prometheus[Prometheus]
+    
+    Frontend -->|ClusterIP Comms| Backend
+    Backend -->|Metrics| Prometheus
+    Prometheus -->|DB Query| Grafana
 ```
 
 ---

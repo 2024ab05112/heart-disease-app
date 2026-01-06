@@ -58,7 +58,7 @@ metadata:
   annotations:
     service.beta.kubernetes.io/azure-dns-label-name: heart-disease-2024ab05112
 spec:
-  type: LoadBalancer
+  type: NodePort
   selector:
     app.kubernetes.io/name: heart-disease-frontend
     app.kubernetes.io/component: frontend
