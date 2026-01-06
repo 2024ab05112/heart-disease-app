@@ -22,7 +22,7 @@ For comprehensive details on EDA, modelling choices, experiment tracking, and pi
 ---
 
 ## System Architecture
-The system utilizes a unified microservices architecture routed via a high-performance **Nginx Ingress Controller**.
+The system utilizes a unified microservices architecture routed via a high-performance Nginx Ingress Controller.
 
 ```mermaid
 graph TD
@@ -41,7 +41,7 @@ graph TD
 
 ## Quick Start (Local Setup)
 
-The easiest way to run the entire stack locally is via **Docker Compose**. This will build all images from scratch and orchestrate the services.
+The easiest way to run the entire stack locally is via Docker Compose. This will build all images from scratch and orchestrate the services.
 
 ### 1. Prerequisites
 - Docker & Docker Compose installed.
@@ -52,15 +52,15 @@ The easiest way to run the entire stack locally is via **Docker Compose**. This 
 # Build and start all services (Backend, Frontend, MLflow)
 docker-compose up --build
 ```
-The application will be available at `http://localhost`.
+The application will be available at http://localhost.
 
 ---
 
 ## CI/CD Workflow
 The project follows a robust automation lifecycle via GitHub Actions:
-1. **Linting & Testing:** Automated checks using `flake8` and `pytest`.
+1. **Linting & Testing:** Automated checks using flake8 and pytest.
 2. **Containerization:** Concurrent Docker builds for high efficiency.
-3. **Deployment:** Automated rollout to Azure Kubernetes Service on every push to `main`.
+3. **Deployment:** Automated rollout to Azure Kubernetes Service on every push to main.
 
 ---
 *Developed as part of the MLOps Assignment*

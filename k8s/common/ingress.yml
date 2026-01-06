@@ -22,7 +22,7 @@ spec:
   - host: heart-disease-2024ab05112.centralindia.cloudapp.azure.com
     http:
       paths:
-      # 📈 Grafana Monitoring
+      # Grafana Monitoring
       - path: /grafana/?(.*)
         pathType: ImplementationSpecific
         backend:
@@ -30,7 +30,7 @@ spec:
             name: grafana
             port:
               number: 3000
-      # 🔍 Prometheus Metrics
+      # Prometheus Metrics
       - path: /prometheus/?(.*)
         pathType: ImplementationSpecific
         backend:
@@ -38,7 +38,7 @@ spec:
             name: prometheus
             port:
               number: 9090
-      # 🚀 Backend API (Swagger UI)
+      # Backend API (Swagger UI)
       - path: /api/?(.*)
         pathType: ImplementationSpecific
         backend:
@@ -46,7 +46,7 @@ spec:
             name: heart-disease-service
             port:
               number: 80
-      # 🏠 Frontend (Root)
+      # Frontend (Root)
       - path: /(.*)
         pathType: ImplementationSpecific
         backend:
