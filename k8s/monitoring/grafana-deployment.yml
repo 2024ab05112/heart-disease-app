@@ -28,27 +28,13 @@ spec:
               protocol: TCP
           env:
             - name: GF_SERVER_ROOT_URL
-              value: "http://heart-disease-2024ab05112.centralindia.cloudapp.azure.com/grafana/"
+              value: "http://heart-disease-grafana-2024ab05112.centralindia.cloudapp.azure.com/"
             - name: GF_SERVER_SERVE_FROM_SUB_PATH
-              value: "true"
-            - name: GF_SERVER_DOMAIN
-              value: "heart-disease-2024ab05112.centralindia.cloudapp.azure.com"
-            - name: GF_SERVER_TRUST_PROXY_HEADERS
-              value: "true"
+              value: "false"
             - name: GF_SECURITY_COOKIE_SECURE
               value: "false"
-            - name: GF_SECURITY_COOKIE_SAMESITE
-              value: "lax"
             - name: GF_SECURITY_ALLOW_EMBEDDING
               value: "true"
-            - name: GF_SECURITY_CSRF_ADDITIONAL_DOMAINS
-              value: "heart-disease-2024ab05112.centralindia.cloudapp.azure.com"
-            - name: GF_AUTH_TOKEN_ROTATION_ENABLED
-              value: "false"
-            - name: GF_SESSION_LIFE_TIME
-              value: "86400"
-            - name: GF_ANALYTICS_REPORTING_ENABLED
-              value: "false"
           resources:
             requests:
               cpu: "100m"

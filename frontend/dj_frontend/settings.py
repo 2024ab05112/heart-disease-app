@@ -7,25 +7,12 @@ SECRET_KEY = 'django-insecure-demo-key-for-mlops-assignment'
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['*', '.azure.com', '.nip.io']
+ALLOWED_HOSTS = ['*']
 
-# Trust the Azure Cloud domain for CSRF
+# Simple CSRF settings for students assignment
 CSRF_TRUSTED_ORIGINS = [
     "http://heart-disease-2024ab05112.centralindia.cloudapp.azure.com",
 ]
-
-# Ensure cookies are working over HTTP
-CSRF_COOKIE_SECURE = False
-SESSION_COOKIE_SECURE = False
-CSRF_COOKIE_HTTPONLY = False
-SECURE_SSL_REDIRECT = False
-SECURE_HSTS_SECONDS = 0
-SECURE_HSTS_INCLUDE_SUBDOMAINS = False
-SECURE_HSTS_PRELOAD = False
-
-# Only trust the Host header if it's sent
-USE_X_FORWARDED_HOST = True
-# Removed SECURE_PROXY_SSL_HEADER as we are using HTTP, not HTTPS.
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -82,5 +69,3 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = 'static/'
-
-

@@ -4,66 +4,81 @@ This document details the architecture and request flow of the Heart Disease Pre
 
 ## Architecture Diagram
 
-The following Mermaid diagram illustrates how the different components interact within the Kubernetes cluster.
+The following Mermaid diagram illustrates how the different components interact within the Kubernetes cluster using dedicated Load Balancers.
 
 ```mermaid
 graph TD
-    User([User]) -->|Accesses UI via Browser| ExtLB[LoadBalancer / NodePort 30008]
-    
-    subgraph K8s_Cluster [Kubernetes Cluster]
+    subgraph Users [Users / External]
+        U1([User Accessing Web UI])
+        U2([Dev Accessing API Docs])
+        U3([Admin Accessing Grafana])
+    end
+
+    subgraph Azure_LoadBalancers [Azure Load Balancers]
+        LB_Fnd[Frontend LB]
+        LB_API[API LB]
+        LB_GF[Grafana LB]
+        LB_PR[Prometheus LB]
+    end
+
+    subgraph K8s_Cluster [AKS Cluster]
         
-        subgraph Frontend_Pod [Frontend Pod]
+        subgraph Frontend_Group [Frontend Layer]
             Django[Django App]
         end
         
-        subgraph Backend_Pod [Backend Pod]
+        subgraph Backend_Group [Backend Layer]
             FastAPI[FastAPI Service]
             MLModel[ML Model]
         end
         
-        ExtLB -->|Traffic Forwarding| Frontend_Svc[Frontend Service]
-        Frontend_Svc -->|Selects Pod| Django
-        
-        Django -->|HTTP POST Request| Backend_DNS[http://heart-disease-service:80]
-        Backend_DNS -->|ClusterDNS Resolution| Backend_Svc[Backend Service]
-        Backend_Svc -->|Selects Pod| FastAPI
-        
+        subgraph Monitoring_Group [Observability Layer]
+            Prometheus[Prometheus Server]
+            Grafana[Grafana Dashboards]
+        end
+
+        %% Connections
+        LB_Fnd --> Django
+        LB_API --> FastAPI
+        LB_GF --> Grafana
+        LB_PR --> Prometheus
+
+        Django -->|Synchronous POST| Backend_Svc[Internal API Service]
+        Backend_Svc --> FastAPI
         FastAPI -->|Inference| MLModel
-        MLModel -->|Prediction| FastAPI
-        FastAPI -->|JSON Response| Django
+        Prometheus -->|Scrapes| Backend_Svc
+        Grafana -->|Queries| Prometheus
     end
-    
-    Django -->|Rendered Page| User
-    
-    subgraph Monitoring [Observability]
-        Prometheus -->|Scrapes Metrics| K8s_Cluster
-        Grafana -->|Visualizes| Prometheus
-    end
+
+    U1 --> LB_Fnd
+    U2 --> LB_API
+    U3 --> LB_GF
 ```
 
 ## Service Communication Details
 
-### 1. User -> Frontend
-- **Service**: `heart-disease-frontend-service`
-- **Type**: LoadBalancer (or NodePort in Minikube)
-- **External Port**: 30008
-- **Flow**: The user accesses the application URL. The Service routes the request to a `heart-disease-frontend` pod running the Django application.
+### 1. External Access Points
+Each service is reachable via a unique Azure DNS label under the `centralindia.cloudapp.azure.com` domain.
 
-### 2. Frontend -> Backend
+- **Frontend:** `heart-disease-2024ab05112`
+- **Backend API:** `heart-disease-api-2024ab05112`
+- **Grafana:** `heart-disease-grafana-2024ab05112`
+- **Prometheus:** `heart-disease-prom-2024ab05112`
+
+### 2. Frontend -> Backend (Internal)
 - **Service**: `heart-disease-service`
-- **Type**: NodePort (ClusterIP component used for internal comms)
+- **Type**: LoadBalancer (Internal IP)
 - **Internal DNS**: `heart-disease-service`
-- **Internal Port**: 80
 - **Flow**:
-    - When a user submits the form, the Django view sends a synchronous HTTP POST request to `http://heart-disease-service:80/predict`.
-    - Kubernetes CoreDNS resolves `heart-disease-service` to the ClusterIP of the backend service.
-    - The request is routed to a `heart-disease-api` pod.
+    - When a user submits the form, the Django view sends a synchronous HTTP POST request to `http://heart-disease-service:80/api/predict`.
+    - This communication stays **inside** the cluster network for maximum performance and security.
 
 ### 3. Backend Execution
 - The FastAPI application receives the request payload.
-- It loads the pre-trained model (if not already loaded).
-- It performs inference and returns the result (e.g., "Heart Disease Detected" or "Normal") as a JSON response.
+- It loads the pre-trained model and performs inference.
+- Results are returned as JSON, which Django then renders for the user.
 
-### 4. Response
-- The Django frontend parses the JSON response.
-- It renders the result template and sends the HTML back to the user's browser.
+### 4. Monitoring Flow
+- **Prometheus** scrapes metrics directly from the backend service at `http://heart-disease-service:80/api/metrics`.
+- **Grafana** is configured with an internal datasource pointing to `http://prometheus:9090`.
+- Users can access the Grafana UI directly to view the "Heart Disease API Health" dashboard without passing through the Django frontend.

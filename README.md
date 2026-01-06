@@ -6,9 +6,10 @@
 A production-ready machine learning system for heart disease risk prediction, featuring automated CI/CD, experiment tracking with MLflow, and scalable deployment on Azure Kubernetes Service (AKS).
 
 ## Live Access
-- **Web Application:** [heart-disease-2024ab05112.centralindia.cloudapp.azure.com](http://heart-disease-2024ab05112.centralindia.cloudapp.azure.com/)
-- **API Documentation:** [Swagger UI](http://heart-disease-2024ab05112.centralindia.cloudapp.azure.com/api/docs)
-- **Monitoring:** [Grafana Dashboard](http://heart-disease-2024ab05112.centralindia.cloudapp.azure.com/grafana/) | [Prometheus UI](http://heart-disease-2024ab05112.centralindia.cloudapp.azure.com/prometheus/)
+Each component is accessible via its own dedicated FQDN:
+- **Web Application:** [Frontend UI](http://heart-disease-2024ab05112.centralindia.cloudapp.azure.com/)
+- **API Documentation:** [Swagger UI](http://heart-disease-api-2024ab05112.centralindia.cloudapp.azure.com/api/docs)
+- **Monitoring:** [Grafana Dashboard](http://heart-disease-grafana-2024ab05112.centralindia.cloudapp.azure.com/) | [Prometheus UI](http://heart-disease-prom-2024ab05112.centralindia.cloudapp.azure.com/)
 
 ---
 
@@ -21,16 +22,17 @@ For comprehensive details on EDA, modelling choices, experiment tracking, and pi
 ---
 
 ## System Architecture
-The system utilizes a microservices architecture orchestrated by Kubernetes (AKS) and routed via a Django Reverse Proxy.
+The system utilizes a decentralized microservices architecture orchestrated by Kubernetes (AKS). Each service is exposed via an independent Azure Load Balancer.
 
 ```mermaid
 graph TD
-    User((User)) -->|HTTPS| Proxy[Django Proxy]
-    Proxy -->|API| Backend[Backend API]
-    Proxy -->|UI| Frontend[Frontend Web]
+    User((User)) -->|HTTP| Frontend[Frontend Web]
+    User -->|HTTP| API_Docs[API Swagger]
+    Frontend -->|Internal RPC| Backend[Backend API]
     Backend -->|Track| MLflow[(MLflow)]
     Backend -->|Metrics| Prometheus[Prometheus]
     Prometheus -->|Visualize| Grafana[Grafana]
+    User -->|View Stats| Grafana
 ```
 
 ---

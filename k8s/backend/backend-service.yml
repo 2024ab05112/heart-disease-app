@@ -6,8 +6,10 @@ metadata:
     app.kubernetes.io/name: heart-disease-api
     app.kubernetes.io/component: backend
     app.kubernetes.io/part-of: heart-disease-prediction
+  annotations:
+    service.beta.kubernetes.io/azure-dns-label-name: heart-disease-api-2024ab05112
 spec:
-  type: NodePort
+  type: LoadBalancer
   selector:
     app.kubernetes.io/name: heart-disease-api
     app.kubernetes.io/component: backend

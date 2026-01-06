@@ -6,14 +6,16 @@ metadata:
     app.kubernetes.io/name: prometheus
     app.kubernetes.io/component: monitoring
     app.kubernetes.io/part-of: heart-disease-prediction
+  annotations:
+    service.beta.kubernetes.io/azure-dns-label-name: heart-disease-prom-2024ab05112
 spec:
-  type: NodePort
+  type: LoadBalancer
   selector:
     app.kubernetes.io/name: prometheus
     app.kubernetes.io/component: monitoring
   ports:
     - name: http
-      port: 9090
-      targetPort: http
+      port: 80
+      targetPort: 9090
       nodePort: 30090
       protocol: TCP
