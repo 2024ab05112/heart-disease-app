@@ -59,11 +59,12 @@ def proxy_view(request, upstream_url, path=''):
         proxy_response.set_cookie(
             key=cookie.name,
             value=cookie.value,
-            domain=cookie.domain,
+            domain=None,  # Crucial: Don't use upstream domain (e.g. 'grafana')
             path=cookie.path,
             secure=cookie.secure,
             httponly=cookie.has_nonstandard_attr('HttpOnly') or False,
-            expires=cookie.expires
+            expires=cookie.expires,
+            samesite='Lax'
         )
             
     return proxy_response
