@@ -190,4 +190,3 @@ jobs:
             k8s/monitoring/grafana-dashboards.yml
             k8s/monitoring/grafana-deployment.yml
             k8s/monitoring/grafana-service.yml
-            k8s/common/ingress.yml
