@@ -12,12 +12,16 @@ ALLOWED_HOSTS = ['*', '.azure.com', '.nip.io']
 # Trust the Azure Cloud domain for CSRF
 CSRF_TRUSTED_ORIGINS = [
     "http://heart-disease-2024ab05112.centralindia.cloudapp.azure.com",
-    "https://heart-disease-2024ab05112.centralindia.cloudapp.azure.com"
 ]
 
-# Standard Proxy headers settings
+# Ensure cookies are working over HTTP
+CSRF_COOKIE_SECURE = False
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_HTTPONLY = False
+
+# Only trust the Host header if it's sent
 USE_X_FORWARDED_HOST = True
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+# Removed SECURE_PROXY_SSL_HEADER as we are using HTTP, not HTTPS.
 
 INSTALLED_APPS = [
     'django.contrib.admin',
