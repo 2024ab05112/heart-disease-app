@@ -14,9 +14,7 @@ __pycache__/
 mlruns/
 
 # Models & artifacts
-*.png 
 mlruns/
-*.png
 *.json
 *.csv
 classification_report_logistic_regression.txt
