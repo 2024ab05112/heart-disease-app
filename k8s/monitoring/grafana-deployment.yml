@@ -37,6 +37,8 @@ spec:
               value: "lax"
             - name: GF_SECURITY_ALLOW_EMBEDDING
               value: "true"
+            - name: GF_SECURITY_CSRF_ADDITIONAL_DOMAINS
+              value: "heart-disease-2024ab05112.centralindia.cloudapp.azure.com"
           resources:
             requests:
               cpu: "100m"

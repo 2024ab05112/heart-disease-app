@@ -24,6 +24,11 @@ def proxy_view(request, upstream_url, path=''):
         if key.lower() not in ['host', 'content-length']
     }
     
+    # Add Standard Proxy Headers
+    headers['X-Forwarded-For'] = request.META.get('REMOTE_ADDR')
+    headers['X-Forwarded-Host'] = request.get_host()
+    headers['X-Forwarded-Proto'] = 'https' if request.is_secure() else 'http'
+    
     # Internal K8s service calls don't need the external host header usuallly,
     # or they need the specific service name. Requests will handle Host automatically
     # based on the URL, which is correct for K8s DNS.
