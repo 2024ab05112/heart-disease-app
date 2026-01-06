@@ -61,6 +61,10 @@ def proxy_view(request, upstream_url, path=''):
 
     # Explicitly handle cookies to ensure attributes are preserved
     for cookie in response.cookies:
+        # Avoid overwriting Django's internal cookies
+        if cookie.name.lower() in ['csrftoken', 'sessionid']:
+            continue
+            
         proxy_response.set_cookie(
             key=cookie.name,
             value=cookie.value,
