@@ -175,6 +175,31 @@ jobs:
           sed -i "s|image: .*/heart-disease-api:latest|image: ${{ env.DOCKER_USERNAME }}/heart-disease-api:$BACKEND_TAG|g" k8s/backend/backend-deployment.yml
           sed -i "s|image: .*/heart-disease-frontend:latest|image: ${{ env.DOCKER_USERNAME }}/heart-disease-frontend:$FRONTEND_TAG|g" k8s/frontend/frontend-deployment.yml
 
+      - name: Install Nginx Ingress Controller
+        run: |
+          kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.8.2/deploy/static/provider/cloud/deploy.yaml
+          
+          # Wait for the service to be created
+          echo "Waiting for Ingress Controller Service..."
+          kubectl wait --namespace ingress-nginx --for=condition=ready pod --selector=app.kubernetes.io/component=controller --timeout=120s
+
+      - name: Assign DNS Label to Ingress IP
+        run: |
+          # Get the resource group of the node pool (MC_...)
+          NODE_RESOURCE_GROUP=$(az aks show --resource-group ${{ env.RESOURCE_GROUP }} --name ${{ env.CLUSTER_NAME }} --query nodeResourceGroup -o tsv)
+          
+          # Find the Public IP resource created by Nginx Ingress
+          # We wait a bit for Azure to provision the IP resource
+          sleep 30
+          IP_NAME=$(az network public-ip list --resource-group $NODE_RESOURCE_GROUP --query "[?contains(name, 'kubernetes')].name" -o tsv | head -n 1)
+          
+          if [ ! -z "$IP_NAME" ]; then
+            echo "Assigning DNS label to IP: $IP_NAME"
+            az network public-ip update --resource-group $NODE_RESOURCE_GROUP --name $IP_NAME --dns-name heart-disease-2024ab05112
+          else
+            echo "Warning: Public IP not found yet. DNS might take another run to sync."
+          fi
+
       - name: Deploy to AKS
         uses: Azure/k8s-deploy@v4
         with:
