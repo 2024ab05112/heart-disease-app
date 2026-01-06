@@ -14,8 +14,9 @@ A production-ready machine learning system for heart disease risk prediction, fe
 
 ## Professional Documentation
 For comprehensive details on EDA, modelling choices, experiment tracking, and pipeline design, please refer to the official project reports:
-- [**Detailed Project Report (Markdown)**](docs/Project_Report.md)
-- [**Detailed Project Report (Word DOCX)**](docs/Project_Report.docx)
+- [**Project Report**](docs/Project_Report.docx) ([Markdown Version](docs/Project_Report.md))
+- [**Technical Overview**](docs/Detailed_Project_Report.docx) ([Markdown Version](docs/Detailed_Project_Report.md))
+- [**Project Detail Description**](https://drive.google.com/file/d/1EAkUQg3R94hodZxZxqRHMX2v1R3LgmU4/view)
 
 ---
 
