@@ -6,18 +6,18 @@
 A production-ready machine learning system for heart disease risk prediction, featuring automated CI/CD, experiment tracking with MLflow, and scalable deployment on Azure Kubernetes Service (AKS).
 
 ## Live Access
-The entire stack is accessible via a single entry point using Ingress routing:
+All services are routed via a unified Nginx Ingress Controller:
 - **Web Application:** [Frontend UI](http://heart-disease-2024ab05112.centralindia.cloudapp.azure.com/)
 - **API Documentation:** [Swagger UI](http://heart-disease-2024ab05112.centralindia.cloudapp.azure.com/api/docs)
 - **Monitoring:** [Grafana Dashboard](http://heart-disease-2024ab05112.centralindia.cloudapp.azure.com/grafana/) | [Prometheus UI](http://heart-disease-2024ab05112.centralindia.cloudapp.azure.com/prometheus/)
 
 ---
 
-## Professional Documentation
-For comprehensive details on EDA, modelling choices, experiment tracking, and pipeline design, please refer to the official project reports:
-- [**Project Report**](docs/Project_Report.docx) ([Markdown Version](docs/Project_Report.md))
-- [**Technical Overview**](docs/Detailed_Project_Report.docx) ([Markdown Version](docs/Detailed_Project_Report.md))
-- [**Project Detail Description**](https://drive.google.com/file/d/1EAkUQg3R94hodZxZxqRHMX2v1R3LgmU4/view)
+## Official Project Documentation
+For the complete end-to-end report covering EDA, model details, architecture, and CI/CD workflows, please refer to:
+- [**Project Documentation (Word)**](docs/Project_Documentation.docx)
+- [**Video Walkthrough / Demo**](https://drive.google.com/file/d/1EAkUQg3R94hodZxZxqRHMX2v1R3LgmU4/view)
+- [**Technical Wiki**](https://github.com/2024ab05112/heart-disease-app/wiki)
 
 ---
 
@@ -32,7 +32,7 @@ graph TD
     Ingress -->|/grafana| Grafana[Grafana]
     Ingress -->|/prometheus| Prometheus[Prometheus]
     
-    Frontend -->|ClusterIP Comms| Backend
+    Frontend -->|Internal Comms| Backend
     Backend -->|Metrics| Prometheus
     Prometheus -->|DB Query| Grafana
 ```
@@ -41,15 +41,11 @@ graph TD
 
 ## Quick Start (Local Setup)
 
-The easiest way to run the entire stack locally is via Docker Compose. This will build all images from scratch and orchestrate the services.
+The easiest way to run the entire stack locally is via Docker Compose.
 
-### 1. Prerequisites
-- Docker & Docker Compose installed.
-- Repository cloned.
-
-### 2. Execution
+### Execution
 ```bash
-# Build and start all services (Backend, Frontend, MLflow)
+# Build and start all services
 docker-compose up --build
 ```
 The application will be available at http://localhost.
@@ -58,9 +54,10 @@ The application will be available at http://localhost.
 
 ## CI/CD Workflow
 The project follows a robust automation lifecycle via GitHub Actions:
-1. **Linting & Testing:** Automated checks using flake8 and pytest.
-2. **Containerization:** Concurrent Docker builds for high efficiency.
-3. **Deployment:** Automated rollout to Azure Kubernetes Service on every push to main.
+1. **Validation:** Automated linting and unit tests.
+2. **Containerization:** Concurrent Docker builds.
+3. **Auto-Infra:** Automatic AKS cluster management and Ingress installation.
+4. **Deployment:** Dynamic DNS mapping and rollout to Azure.
 
 ---
 *Developed as part of the MLOps Assignment*

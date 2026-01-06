@@ -26,3 +26,4 @@ This project is an end-to-end MLOps solution designed to predict the presence of
 - **[[Architecture Details|Architecture]]**: Deep dive into the system design and workflows.
 - **[[API Documentation|API]]**: Details on the backend endpoints and usage.
 - **[[Monitoring Guide|Monitoring]]**: How to use Prometheus and Grafana dashboards.
+- **[Project Demonstration Video](https://drive.google.com/file/d/1EAkUQg3R94hodZxZxqRHMX2v1R3LgmU4/view)**: Complete video walkthrough of the system.
