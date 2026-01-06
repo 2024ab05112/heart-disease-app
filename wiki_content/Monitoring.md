@@ -1,73 +1,30 @@
-# Monitoring Guide (Prometheus & Grafana)
+# Monitoring and Observability
 
-This guide explains how to monitor the health and performance of the Heart Disease Prediction API using the integrated Prometheus and Grafana stack.
+The Heart Disease Prediction System includes a comprehensive monitoring stack based on Prometheus and Grafana.
 
-## Overview
-- **Prometheus**: Collects metrics from the backend `/metrics` endpoint every 15 seconds.
-- **Grafana**: Visualizes these metrics through interactive dashboards.
+## Monitoring Components
 
-## Accessing the Dashboards
+### 1. Prometheus UI
+Prometheus is responsible for scraping metrics from the production API and storing them for analysis.
+- **Endpoint**: `/prometheus`
+- **Features**: Real-time metric querying, system health checks, and alerting rules.
 
-### 1. Unified Access
-The entire application stack is exposed under a single domain:
+### 2. Grafana Dashboard
+Grafana provides a visual interface for the metrics collected by Prometheus.
+- **Endpoint**: `/grafana`
+- **Dashboards**: Features a dedicated "Heart Disease API Metrics" dashboard showing:
+    - **Total Requests**: Number of predictions made.
+    - **Success Rate**: Ratio of successful vs failed predictions.
+    - **Latency**: 95th and 99th percentile response times.
 
-| Service | URL |
-|---------|-----|
-| **Web App** | `http://heart-disease-2024ab05112.centralindia.cloudapp.azure.com` |
-| **Grafana** | `http://heart-disease-2024ab05112.centralindia.cloudapp.azure.com/grafana` |
-| **Prometheus**| `http://heart-disease-2024ab05112.centralindia.cloudapp.azure.com/prometheus` |
-| **API Docs** | `http://heart-disease-2024ab05112.centralindia.cloudapp.azure.com/api/docs` |
+## How to Access
+Once the system is deployed, the monitoring tools are available at:
+`http://heart-disease-2024ab05112.centralindia.cloudapp.azure.com/grafana/`
+`http://heart-disease-2024ab05112.centralindia.cloudapp.azure.com/prometheus/`
 
-### 2. Login
-Go to **Grafana URL** above and login:
-- **Username**: `admin`
-- **Password**: `admin`
+## Metrics Customization
+Metrics are generated using the `prometheus_client` library in the Backend FastAPI service. The key metrics tracked are:
+- `http_requests_total`: A counter for every hit to the prediction endpoint.
+- `http_request_duration_seconds`: A histogram of request processing times.
 
-> **Note**: A "Heart Disease API Health" dashboard is pre-provisioned for you! No need to create it manually.
-
-### Panel 1: API Request Rate (RPS)
-See how many requests your API is handling per second.
-
--   **Data Source**: Prometheus
--   **Metric Query**: 
-    ```promql
-    rate(api_requests_total[1m])
-    ```
--   **Title**: Requests Per Second
--   **Type**: Time Series
-
-### Panel 2: 95th Percentile Latency
-Monitor how fast your API is responding (excluding the slowest 5% of outliers).
-
--   **Metric Query**:
-    ```promql
-    histogram_quantile(0.95, rate(api_request_latency_seconds_bucket[5m]))
-    ```
--   **Title**: Latency (P95)
--   **Unit**: Seconds (s)
-
-### Panel 3: Endpoint Traffic Distribution
-See which API endpoints are being hit (`/predict` vs `/`).
-
--   **Metric Query**:
-    ```promql
-    sum(rate(api_requests_total[5m])) by (endpoint)
-    ```
--   **Title**: Traffic by Endpoint
--   **Type**: Pie Chart
-
-## Troubleshooting
-**"No Data" in Graphs?**
-1.  Ensure the backend is running and reachable.
-2.  Generate some traffic! The metrics only appear after requests are made.
-    - Run the frontend and make a few predictions.
-    - Or use `curl`:
-      ```bash
-      minikube service heart-disease-service --url
-      # Use the URL returned above
-      curl -X POST http://<IP>:<PORT>/predict -d '...'
-      ```
-3.  Check Prometheus Targets:
-    - Open Prometheus: `minikube service prometheus`
-    - Go to **Status -> Targets**.
-    - Ensure `heart-disease-api` is state **UP**.
+All metrics are exposed at the internal endpoint `/api/metrics` which is scraped by Prometheus every 15 seconds.

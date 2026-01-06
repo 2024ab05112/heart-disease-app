@@ -5,33 +5,30 @@ This project implements a scalable, reproducible, and production-ready Machine L
 
 ### 1.1 Project Deliverables
 - **GitHub Repository:** [https://github.com/2024ab05112/heart-disease-app.git](https://github.com/2024ab05112/heart-disease-app.git)
-- **Web Application:** [http://heart-disease-2024ab05112.centralindia.cloudapp.azure.com/](http://heart-disease-2024ab05112.centralindia.cloudapp.azure.com/)
-- **API Documentation:** [http://heart-disease-2024ab05112.centralindia.cloudapp.azure.com/api/docs](http://heart-disease-2024ab05112.centralindia.cloudapp.azure.com/api/docs)
-- **Monitoring (Grafana):** [http://heart-disease-2024ab05112.centralindia.cloudapp.azure.com/grafana/](http://heart-disease-2024ab05112.centralindia.cloudapp.azure.com/grafana/)
-- **Metrics (Prometheus):** [http://heart-disease-2024ab05112.centralindia.cloudapp.azure.com/prometheus/](http://heart-disease-2024ab05112.centralindia.cloudapp.azure.com/prometheus/)
+- **Unified Entry Point:** [http://heart-disease-2024ab05112.centralindia.cloudapp.azure.com/](http://heart-disease-2024ab05112.centralindia.cloudapp.azure.com/)
+- **Application UI:** [Web Interface](http://heart-disease-2024ab05112.centralindia.cloudapp.azure.com/)
+- **API Documentation:** [Swagger UI](http://heart-disease-2024ab05112.centralindia.cloudapp.azure.com/api/docs)
+- **Monitoring (Grafana):** [Grafana Dashboard](http://heart-disease-2024ab05112.centralindia.cloudapp.azure.com/grafana/)
+- **Metrics (Prometheus):** [Prometheus UI](http://heart-disease-2024ab05112.centralindia.cloudapp.azure.com/prometheus/)
 
 ---
 
 ## 2. System Architecture
-The system is deployed on **Azure Kubernetes Service (AKS)** using a microservices-based approach, optimized for high availability and observability.
+The system is deployed on **Azure Kubernetes Service (AKS)** using an Ingress-based microservices architecture, optimized for high availability and observability.
 
 ### 2.1 Architecture Diagram
 ```mermaid
 graph TD
-    User((User)) -->|HTTPS| Proxy[Django Reverse Proxy]
-    Proxy -->|Routing| Backend[Backend API Pods]
-    Proxy -->|Static Serving| Frontend[Frontend Pods]
-    Backend -->|Log Experiments| MLflow[(MLflow Server)]
-    Backend -->|Expose Metrics| Prometheus[Prometheus]
-    Prometheus -->|Visualize| Grafana[Grafana]
+    User((User)) -->|HTTP| Ingress[Nginx Ingress Controller]
+    Ingress -->|/| Frontend[Frontend Pods]
+    Ingress -->|/api| Backend[Backend API Pods]
+    Ingress -->|/grafana| Grafana[Grafana]
+    Ingress -->|/prometheus| Prometheus[Prometheus]
     
-    subgraph "Production Environment (AKS Cluster)"
-    Proxy
-    Backend
-    Frontend
-    Prometheus
-    Grafana
-    end
+    Frontend -->|Internal RPC| Backend
+    Backend -->|Log| MLflow[(MLflow)]
+    Backend -->|Metrics| Prometheus
+    Prometheus -->|Visualize| Grafana
 ```
 
 ---
@@ -61,34 +58,21 @@ Every training run is tracked with **MLflow**:
 ### 4.1 CI/CD Pipeline Design
 The lifecycle is automated via **GitHub Actions** with the following technical flow:
 1.  **Continuous Integration (CI):** Code linting (`flake8`) and unit testing (`pytest`) are triggered on every Pull Request.
-2.  **Containerization:** Success triggers concurrent Docker builds for API and Frontend images, tagged with the unique GitHub SHA.
-3.  **Continuous Deployment (CD):** Images are pushed to Docker Hub, and Kubernetes manifests are dynamically updated before being applied to the AKS cluster.
+2.  **Containerization:** Concurrent Docker builds for high efficiency.
+3.  **Infrastructure Automation:** Automated installation of Nginx Ingress Controller and dynamic DNS labeling for the Azure Public IP.
+4.  **Continuous Deployment (CD):** Images are pushed to Docker Hub, and Kubernetes manifests are dynamically updated before being applied to the AKS cluster.
 
 ### 4.2 Verification Workflow
 Post-deployment success can be verified through:
-- **Pipeline Logs:** Green status in GitHub Actions.
-- **API Health:** Accessing the live API Documentation endpoint.
-- **Observability:** Monitoring pod health and traffic via Grafana.
+- **Pipeline Logs:** Green status in GitHub Actions for both Build and Deploy stages.
+- **Unified Portal:** Accessing all tools (UI, API, Grafana) via the single FQDN.
+- **Observability:** Real-time metrics visualization via the Grafana dashboard.
 
 ---
 
 ## 5. Setup & Repository Access
 
-### 5.1 SSH Repository Access
-Personal SSH keys are included in the `.ssh/` directory for secure authenticated operations.
-
-> [!IMPORTANT]
-> **Security Note:** The SSH keys are included specifically in this project package for evaluation purposes and are **NOT** available on the public GitHub repository.
-
-**Instructions:**
-```bash
-chmod 600 .ssh/id_rsa
-eval "$(ssh-agent -s)"
-ssh-add .ssh/id_rsa
-ssh -T git@github.com # Verify connection
-```
-
-### 5.2 Local Execution
+### 5.1 Local Execution
 1. **Clone & Setup:**
    ```bash
    git clone git@github.com:2024ab05112/heart-disease-app.git

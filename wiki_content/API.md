@@ -3,7 +3,7 @@
 The backend service is built using **FastAPI** and exposes RESTful endpoints for prediction and monitoring.
 
 ## Base URL
-Internal K8s DNS: `http://heart-disease-service:80`
+Public Entry Point (via Ingress): `http://heart-disease-2024ab05112.centralindia.cloudapp.azure.com/api`
 
 ## Endpoints
 
@@ -64,16 +64,19 @@ Generates a prediction based on patient clinical data.
 }
 ```
 
-### 2. Health Check
-Checks if the API is running.
+### 2. Interactive Documentation (Swagger UI)
+FastAPI automatically generates interactive Swagger documentation.
+- **URL**: `/docs` (Full path: `http://.../api/docs`)
+- **Use Case**: Test API endpoints directly from the browser.
 
+### 3. Health Check
+Checks if the API is running.
 - **URL**: `/`
 - **Method**: `GET`
 - **Response**: `"API is running"`
 
-### 3. Metrics
+### 4. Metrics
 Exposes Prometheus metrics.
-
 - **URL**: `/metrics`
 - **Method**: `GET`
 - **Response**: Plain text Prometheus format.

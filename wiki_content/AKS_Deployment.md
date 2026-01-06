@@ -7,6 +7,9 @@ This guide details how the Heart Disease Prediction System is deployed to a prod
 The application runs on an AKS cluster (`HeartDiseaseCluster`) within the `HeartDiseaseRG` resource group. 
 To optimize costs for development/student usage, the cluster is designed to be **started on demand** by the CI/CD pipeline and should be **stopped manually** when not in use.
 
+## Unified Access Architecture
+Unlike basic deployments that use multiple Public IPs, this system uses an **Nginx Ingress Controller** to route all traffic through a **single entry point**. This bypasses Azure Student subscription IP limits and provides a professional URL structure.
+
 ## CI/CD Pipeline (`deploy.yml`)
 
 The project uses a sophisticated GitHub Actions workflow located at `.github/workflows/deploy.yml` that handles the entire deployment process.
@@ -24,23 +27,19 @@ The pipeline runs automatically on:
 
 2.  **Build and Push (`build-and-push`)**:
     - Runs only if backend or frontend code changes.
-    - Builds Docker images.
-    - Pushes images to Docker Hub with two tags:
-        - `latest`: For general usage.
-        - `<commit-sha>`: For precise version tracking and rolling updates.
+    - Builds Docker images and pushes to Docker Hub with `latest` and `<commit-sha>` tags.
 
-3.  **Deploy (`deploy`)**:
+3.  **Deployment Prep**:
     - **Azure Login**: Authenticates using the `AZURE_CREDENTIALS` secret.
-    - **Cluster State Check**: Automatically checks if the AKS cluster is `Stopped`. If so, it sends a command to **Start** it.
-    - **Context Setup**: Configures `kubectl` to talk to the AKS cluster using `kubelogin`.
-    - **Dynamic Manifest Update**:
-        - Replaces the image tags in the Kubernetes manifests (`deployment.yml` files) with the specific `<commit-sha>` generated in the build step.
-        - This ensures that the cluster runs exactly the version of code that triggered the pipeline.
-    - **Apply Manifests**: Applies all configurations from `k8s/backend`, `k8s/frontend`, `k8s/monitoring`, and `k8s/common`.
+    - **Cluster Power State**: Automatically starts the AKS cluster if it's currently stopped.
+    - **Ingress Controller Management**: The pipeline checks for the presence of the Nginx Ingress Controller and installs it automatically if missing.
+    - **Automated DNS Linking**: Dynamically finds the Ingress Public IP and assigns the `heart-disease-2024ab05112` DNS label using Azure CLI.
+
+4.  **Deploy (`deploy`)**:
+    - **Dynamic Manifest Update**: Replaces image tags with the specific `<commit-sha>`.
+    - **Apply Manifests**: Applies all configurations including Ingress, Monitoring, Backend, and Frontend.
 
 ## Secrets Configuration
-
-For the pipeline to work, the following secrets must be configured in the GitHub Repository (Settings -> Secrets and variables -> Actions):
 
 | Secret Name | Description |
 |-------------|-------------|
@@ -48,11 +47,9 @@ For the pipeline to work, the following secrets must be configured in the GitHub
 | `DOCKER_PASSWORD` | Your Docker Hub access token (or password). |
 | `AZURE_CREDENTIALS` | The JSON output from creating an Azure Service Principal. |
 
-## Manual Cluster Management
+## Manual Management
 
-While the pipeline *starts* the cluster, it does **not** stop it to prevent accidental downtime during review. You must stop it manually to save costs.
-
-**Stop Cluster:**
+**Stop Cluster (To Save Costs):**
 ```bash
 az aks stop --resource-group HeartDiseaseRG --name HeartDiseaseCluster
 ```
@@ -60,9 +57,4 @@ az aks stop --resource-group HeartDiseaseRG --name HeartDiseaseCluster
 **Start Cluster (Manual):**
 ```bash
 az aks start --resource-group HeartDiseaseRG --name HeartDiseaseCluster
-```
-
-**Get Credentials for Local `kubectl`:**
-```bash
-az aks get-credentials --resource-group HeartDiseaseRG --name HeartDiseaseCluster
 ```
